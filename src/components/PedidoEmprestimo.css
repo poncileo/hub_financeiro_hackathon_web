@@ -1,0 +1,337 @@
+.pedido-emprestimo {
+  padding: 2rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.credit-score-banner {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.score-info {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.score-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 150px;
+}
+
+.score-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.score-value {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.score-category {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.score-description {
+  flex: 1;
+  min-width: 200px;
+}
+
+.score-description p {
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.score-limits {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.error-message {
+  font-size: 0.75rem;
+  color: var(--danger-color);
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.loan-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .loan-container {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.loan-form-section {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.loan-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.input-with-prefix {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.input-prefix {
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-weight: 500;
+  border-right: 1px solid var(--border-color);
+}
+
+.input-with-prefix input {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.input-with-prefix input:focus {
+  outline: none;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.form-group input::placeholder {
+  color: var(--text-muted);
+}
+
+.input-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.form-actions {
+  margin-top: 1rem;
+}
+
+.submit-loan-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.submit-loan-button:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+}
+
+.submit-loan-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loan-summary-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.summary-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.summary-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.summary-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.summary-value.highlight {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.summary-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.disclaimer {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.benefits-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.benefits-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.benefits-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.benefits-list li {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  padding-left: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .pedido-emprestimo {
+    padding: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .loan-form-section {
+    padding: 1.5rem;
+  }
+
+  .summary-card,
+  .benefits-card {
+    padding: 1.25rem;
+  }
+}
+

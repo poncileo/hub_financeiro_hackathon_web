@@ -1,0 +1,86 @@
+.financial-card {
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-tertiary) 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.financial-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-title {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.card-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.card-change {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.card-change.up {
+  color: var(--secondary-color);
+}
+
+.card-change.down {
+  color: var(--danger-color);
+}
+
+.change-arrow {
+  font-size: 1rem;
+}
+
+.card-action {
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.view-extract-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.view-extract-button:hover {
+  opacity: 0.8;
+}
+
+.view-extract-button svg {
+  font-size: 0.875rem;
+}
+
+

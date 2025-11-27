@@ -1,0 +1,300 @@
+.extrato {
+  padding: 2rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.extrato-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.extrato-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.extrato-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.period-selector {
+  display: flex;
+  gap: 0.5rem;
+  background-color: var(--bg-tertiary);
+  padding: 0.25rem;
+  border-radius: 8px;
+}
+
+.period-selector button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.period-selector button:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+.period-selector button.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.export-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.extrato-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.summary-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.summary-value.income {
+  color: var(--secondary-color);
+}
+
+.summary-value.expense {
+  color: var(--danger-color);
+}
+
+.extrato-filters {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-button:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.filter-button.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.extrato-table {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1.5fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1.5fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.table-row:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-col {
+  display: flex;
+  align-items: center;
+}
+
+.table-col.amount.income {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.table-col.amount.expense {
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+.table-col.amount.investment {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge.completed {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: var(--secondary-color);
+}
+
+.status-badge.pending {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: var(--warning-color);
+}
+
+@media (max-width: 1024px) {
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr 1.5fr 1fr;
+  }
+
+  .table-col.category,
+  .table-col.status {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .extrato {
+    padding: 1rem;
+  }
+
+  .extrato-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .extrato-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .table-col {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-col::before {
+    content: attr(data-label);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+}
+
+

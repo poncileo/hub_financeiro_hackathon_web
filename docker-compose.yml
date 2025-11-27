@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hub-financeiro-web
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - hub-financeiro-network
+
+networks:
+  hub-financeiro-network:
+    driver: bridge
+

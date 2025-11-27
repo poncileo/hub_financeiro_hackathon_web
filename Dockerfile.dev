@@ -1,0 +1,16 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copia os arquivos de dependências
+COPY package*.json ./
+
+# Instala as dependências
+RUN npm ci
+
+# Expõe a porta do Vite
+EXPOSE 5173
+
+# Comando padrão (pode ser sobrescrito no docker-compose)
+CMD ["npm", "run", "dev", "--", "--host"]
+
