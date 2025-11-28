@@ -21,8 +21,7 @@ function Sidebar({ isOpen, onClose }) {
     { icon: MdQrCode, label: 'PIX', path: '/pix' },
     { icon: MdPayment, label: 'Pagamentos', path: '/pagamentos' },
     { icon: MdSync, label: 'Transações Recorrentes', path: '/transacoes-recorrentes' },
-    { icon: MdCreditCard, label: 'Empréstimos', path: '/pedido-emprestimo' },    
-    { icon: MdSettings, label: 'Configurações', path: '/configuracoes' },
+    { icon: MdCreditCard, label: 'Empréstimos', path: '/pedido-emprestimo' },
   ]
 
   return (
@@ -31,7 +30,6 @@ function Sidebar({ isOpen, onClose }) {
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h2>Hub Financeiro</h2>
-          <button className="close-button" onClick={onClose}>×</button>
         </div>
         <nav className="sidebar-nav">
           {menuItems.map((item, index) => {

@@ -40,4 +40,12 @@
   background-color: var(--primary-color);
 }
 
+.legend-color.gastos {
+  background-color: var(--danger-color);
+}
+
+.legend-color.media {
+  background-color: var(--secondary-color);
+}
+
 

@@ -1,0 +1,58 @@
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 1.5rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(245,246,248,0.95));
+  border-top: 1px solid var(--border-color);
+  z-index: 1200;
+}
+
+.bottom-nav .nav-item {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.bottom-nav .nav-item svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+}
+
+/* larger icon for central add button */
+.bottom-nav .nav-add svg {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+}
+
+/* central add button */
+.bottom-nav .nav-add {
+  width: 64px;
+  height: 64px;
+  margin-top: -26px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transform: translateY(-6px);
+}
+
+
+@media (min-width: 1024px) {
+  .bottom-nav { display: none; }
+}

@@ -19,23 +19,36 @@ const authService = {
 
   // Signup (registro de novo usuário)
   signup: async (name, email, password) => {
-    const response = await apiCall('/auth/signup', {
+    // Primeiro cria o usuário
+    const createResponse = await apiCall('/users', {
       method: 'POST',
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ 
+        name, 
+        email, 
+        password,
+        type: 'NORMAL',
+        balance: 0,
+        creditScore: 0,
+        configuration: {},
+      }),
     })
 
-    if (response.token) {
-      localStorage.setItem('authToken', response.token)
-      localStorage.setItem('user', JSON.stringify(response.user))
-    }
-
-    return response
+    // Depois faz login automaticamente
+    const loginResponse = await authService.login(email, password)
+    
+    return loginResponse
   },
 
   // Logout
-  logout: () => {
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('user')
+  logout: async () => {
+    try {
+      await apiCall('/auth/logout', {
+        method: 'POST',
+      })
+    } finally {
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('user')
+    }
   },
 
   // Verificar se está autenticado

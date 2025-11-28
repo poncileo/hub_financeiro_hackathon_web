@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { MdWarning } from 'react-icons/md'
+import { MdWarning, MdCheckCircle } from 'react-icons/md'
 import './Signup.css'
 
 function Signup() {
@@ -13,6 +13,7 @@ function Signup() {
     acceptTerms: false,
   })
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const { signup, isAuthenticated, loading: authLoading } = useAuth()
   const navigate = useNavigate()
@@ -39,6 +40,11 @@ function Signup() {
       return false
     }
 
+    if (formData.name.trim().length < 3) {
+      setError('Nome deve ter pelo menos 3 caracteres')
+      return false
+    }
+
     if (!formData.email.trim()) {
       setError('Email é obrigatório')
       return false
@@ -46,6 +52,11 @@ function Signup() {
 
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
       setError('Email inválido')
+      return false
+    }
+
+    if (!formData.password) {
+      setError('Senha é obrigatória')
       return false
     }
 
@@ -70,6 +81,7 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setSuccess('')
 
     if (!validateForm()) {
       return
@@ -79,12 +91,37 @@ function Signup() {
 
     try {
       await signup(formData.name, formData.email, formData.password)
-      navigate('/')
+      setSuccess('Conta criada com sucesso! Redirecionando...')
+      // A navegação será feita automaticamente pelo useEffect acima
     } catch (err) {
-      setError(err.message || 'Erro ao criar conta. Tente novamente.')
+      console.error('Erro ao criar conta:', err)
+      
+      let errorMessage = 'Erro ao criar conta. Tente novamente.'
+      
+      if (err.message.includes('já existe')) {
+        errorMessage = 'Este email já está cadastrado'
+      } else if (err.message.includes('Email')) {
+        errorMessage = 'Email inválido'
+      } else if (err.message.includes('Failed to fetch')) {
+        errorMessage = 'Erro de conexão. Verifique se o servidor está rodando.'
+      } else {
+        errorMessage = err.message || errorMessage
+      }
+      
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
+  }
+
+  if (authLoading) {
+    return (
+      <div className="signup-container">
+        <div className="signup-card">
+          <p>Carregando...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -101,7 +138,14 @@ function Signup() {
           {error && (
             <div className="error-alert">
               <MdWarning className="error-icon" />
-              {error}
+              <span>{error}</span>
+            </div>
+          )}
+
+          {success && (
+            <div className="success-alert">
+              <MdCheckCircle className="success-icon" />
+              <span>{success}</span>
             </div>
           )}
 
@@ -116,6 +160,7 @@ function Signup() {
               placeholder="Seu nome completo"
               required
               disabled={loading}
+              autoComplete="name"
             />
           </div>
 
@@ -130,6 +175,7 @@ function Signup() {
               placeholder="seu@email.com"
               required
               disabled={loading}
+              autoComplete="email"
             />
           </div>
 
@@ -146,6 +192,7 @@ function Signup() {
                 required
                 disabled={loading}
                 minLength={6}
+                autoComplete="new-password"
               />
               <span className="input-hint">Mínimo 6 caracteres</span>
             </div>
@@ -162,6 +209,7 @@ function Signup() {
                 required
                 disabled={loading}
                 minLength={6}
+                autoComplete="new-password"
               />
             </div>
           </div>
@@ -178,11 +226,11 @@ function Signup() {
               />
               <span>
                 Eu aceito os{' '}
-                <a href="#" className="terms-link">
+                <a href="#" onClick={(e) => e.preventDefault()} className="terms-link">
                   termos de uso
                 </a>{' '}
                 e{' '}
-                <a href="#" className="terms-link">
+                <a href="#" onClick={(e) => e.preventDefault()} className="terms-link">
                   política de privacidade
                 </a>
               </span>
@@ -192,9 +240,16 @@ function Signup() {
           <button
             type="submit"
             className="signup-button"
-            disabled={loading}
+            disabled={loading || !formData.name || !formData.email || !formData.password}
           >
-            {loading ? 'Criando conta...' : 'Criar Conta'}
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                Criando conta...
+              </>
+            ) : (
+              'Criar Conta'
+            )}
           </button>
         </form>
 

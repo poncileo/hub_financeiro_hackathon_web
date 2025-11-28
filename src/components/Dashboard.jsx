@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { formatValue } from '../utils/formatValue'
-import { MdAccountBalance, MdVisibility, MdVisibilityOff } from 'react-icons/md'
+import { MdAccountBalance, MdVisibility, MdVisibilityOff, MdAdd } from 'react-icons/md'
 import FinancialResumeCard from './FinancialResumeCard'
-import PortfolioChart from './PortfolioChart'
 import TransactionsList from './TransactionsList'
 import './Dashboard.css'
+import { Link } from 'react-router-dom'
 
 function Dashboard() {
-  const [selectedPeriod, setSelectedPeriod] = useState('month')
   const [isValuesVisible, setIsValuesVisible] = useState(true);
 
   const toggleVisibility = () => {
@@ -19,24 +18,7 @@ function Dashboard() {
       title: 'Saldo Total',
       type: 'balance',
       value: 'R$ 125.450,00',
-      change: '+12.5%',
       trend: 'up',
-      icon: MdAccountBalance,
-    },
-    {
-      title: 'Receitas do Mês',
-      type: 'income',
-      value: 'R$ 45.230,00',
-      change: '+8.2%',
-      trend: 'up',
-      icon: MdAccountBalance,
-    },
-    {
-      title: 'Despesas do Mês',
-      type: 'expense',
-      value: 'R$ 18.750,00',
-      change: '-3.1%',
-      trend: 'down',
       icon: MdAccountBalance,
     },
   ]
@@ -50,8 +32,8 @@ function Dashboard() {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h2>Visão Geral</h2>
         <div className="header-actions">
+          <h2>Visão Geral</h2>
           <button
             className="visibility-toggle"
             onClick={toggleVisibility}
@@ -64,26 +46,6 @@ function Dashboard() {
               <MdVisibilityOff className="eye-icon" />
             )}
           </button>
-          <div className="period-selector">
-            <button
-              className={selectedPeriod === 'week' ? 'active' : ''}
-              onClick={() => setSelectedPeriod('week')}
-            >
-              Semana
-            </button>
-            <button
-              className={selectedPeriod === 'month' ? 'active' : ''}
-              onClick={() => setSelectedPeriod('month')}
-            >
-              Mês
-            </button>
-            <button
-              className={selectedPeriod === 'year' ? 'active' : ''}
-              onClick={() => setSelectedPeriod('year')}
-            >
-              Ano
-            </button>
-          </div>
         </div>
       </div>
 
@@ -93,38 +55,19 @@ function Dashboard() {
         ))}
       </div>
 
-      <div className="expenses-control-card">
-        <div className="expenses-header">
-          <h3>Controle de Gastos</h3>
-          <span className="expenses-period">Este mês</span>
-        </div>
-        <div className="expenses-progress">
-          <div className="progress-info">
-            <span className="progress-label">Gastos</span>
-            <span className="progress-value">
-              {isValuesVisible ? formatValue(monthlyExpenses) : '••••••'} / {isValuesVisible ? formatValue(monthlyBudget) : '••••••'}
-            </span>
+      <div className="dashboard-actions">
+        <div className="savings-goal-card">
+          <div className="savings-card-left">
+            <h3>Criar meta de poupança</h3>
+            <p>Defina um objetivo e acompanhe seu progresso</p>
           </div>
-          <div className="progress-bar-container">
-            <div 
-              className="progress-bar"
-              style={{ width: `${Math.min(expensesPercentage, 100)}%` }}
-            ></div>
-          </div>
-          <div className="progress-footer">
-            <span className={`remaining-budget ${remainingBudget < 0 ? 'negative' : ''}`}>
-              {remainingBudget >= 0 ? 'Restante: ' : 'Excedido: '}
-              {isValuesVisible ? formatValue(Math.abs(remainingBudget)) : '••••••'}
-            </span>
-            <span className="expenses-percentage">{expensesPercentage.toFixed(0)}%</span>
-          </div>
+          <Link to="/create-goal" className="savings-card-action" aria-label="Criar meta">
+            <MdAdd />
+          </Link>
         </div>
       </div>
 
       <div className="dashboard-content">
-        <div className="chart-section">
-          <PortfolioChart />
-        </div>
         <div className="transactions-section">
           <TransactionsList />
         </div>

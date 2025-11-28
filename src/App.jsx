@@ -7,11 +7,14 @@ import Pix from './components/Pix'
 import Pagamentos from './components/Pagamentos'
 import TransacoesRecorrentes from './components/TransacoesRecorrentes'
 import PedidoEmprestimo from './components/PedidoEmprestimo'
+import CreateGoal from './pages/CreateGoal'
+import EditUser from './pages/EditUser'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import ProtectedRoute from './components/ProtectedRoute'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
+import BottomNav from './components/BottomNav'
 import './App.css'
 
 function AppLayout() {
@@ -71,7 +74,24 @@ function AppLayout() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/create-goal"
+            element={
+              <ProtectedRoute>
+                <CreateGoal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/perfil"
+            element={
+              <ProtectedRoute>
+                <EditUser />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
+        <BottomNav />
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 // Configuração da API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/'
 
 // Função auxiliar para fazer requisições
 const apiCall = async (endpoint, options = {}) => {
@@ -21,7 +21,7 @@ const apiCall = async (endpoint, options = {}) => {
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
+      const errorData = await response.json().catch(() => ({}))
       throw new Error(errorData.message || `Erro na requisição: ${response.status}`)
     }
 

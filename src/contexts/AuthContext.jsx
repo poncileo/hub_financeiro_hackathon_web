@@ -1,84 +1,82 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { authService } from '../services'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
+  // Verifica se há uma sessão ativa ao montar o componente
   useEffect(() => {
-    // Verifica se há um usuário salvo no localStorage
-    const savedUser = localStorage.getItem('user')
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
+    const checkAuth = async () => {
+      try {
+        const savedUser = localStorage.getItem('user')
+        const token = localStorage.getItem('authToken')
+
+        if (savedUser && token) {
+          // Valida o token tentando fazer uma requisição autenticada
+          setUser(JSON.parse(savedUser))
+        }
+      } catch (err) {
+        console.error('Erro ao verificar autenticação:', err)
+        // Limpa dados inválidos
+        localStorage.removeItem('user')
+        localStorage.removeItem('authToken')
+      } finally {
+        setLoading(false)
+      }
     }
-    setLoading(false)
+
+    checkAuth()
   }, [])
 
-  const login = (email, password) => {
-    // Simulação de login - em produção, isso seria uma chamada à API
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Validação simples (em produção, seria verificado no backend)
-        if (email && password) {
-          const userData = {
-            id: 1,
-            email: email,
-            name: email.split('@')[0],
-            initials: email.split('@')[0].substring(0, 2).toUpperCase(),
-          }
-          setUser(userData)
-          localStorage.setItem('user', JSON.stringify(userData))
-          resolve(userData)
-        } else {
-          reject(new Error('Email e senha são obrigatórios'))
-        }
-      }, 1000)
-    })
+  const login = async (email, password) => {
+    setError(null)
+    try {
+      const response = await authService.login(email, password)
+      
+      setUser(response.user)
+      localStorage.setItem('authToken', response.token)
+      localStorage.setItem('user', JSON.stringify(response.user))
+      
+      return response.user
+    } catch (err) {
+      const errorMessage = err.message || 'Erro ao fazer login'
+      setError(errorMessage)
+      throw err
+    }
   }
 
-  const signup = (name, email, password) => {
-    // Simulação de cadastro - em produção, isso seria uma chamada à API
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Validação simples (em produção, seria verificado no backend)
-        if (name && email && password) {
-          // Verifica se já existe um usuário com esse email (simulação)
-          const existingUsers = JSON.parse(localStorage.getItem('users') || '[]')
-          const userExists = existingUsers.some(u => u.email === email)
-          
-          if (userExists) {
-            reject(new Error('Este email já está cadastrado'))
-            return
-          }
-
-          // Cria novo usuário
-          const newUser = {
-            id: Date.now(),
-            name: name,
-            email: email,
-            initials: name.substring(0, 2).toUpperCase(),
-            createdAt: new Date().toISOString(),
-          }
-
-          // Salva na lista de usuários (simulação)
-          existingUsers.push(newUser)
-          localStorage.setItem('users', JSON.stringify(existingUsers))
-
-          // Faz login automático após cadastro
-          setUser(newUser)
-          localStorage.setItem('user', JSON.stringify(newUser))
-          resolve(newUser)
-        } else {
-          reject(new Error('Todos os campos são obrigatórios'))
-        }
-      }, 1000)
-    })
+  const signup = async (name, email, password) => {
+    setError(null)
+    try {
+      const response = await authService.signup(name, email, password)
+      
+      setUser(response.user)
+      localStorage.setItem('authToken', response.token)
+      localStorage.setItem('user', JSON.stringify(response.user))
+      
+      return response.user
+    } catch (err) {
+      const errorMessage = err.message || 'Erro ao fazer cadastro'
+      setError(errorMessage)
+      throw err
+    }
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem('user')
+  const logout = async () => {
+    try {
+      await authService.logout()
+    } catch (err) {
+      console.error('Erro ao fazer logout:', err)
+    } finally {
+      setUser(null)
+      setError(null)
+      localStorage.removeItem('user')
+      localStorage.removeItem('authToken')
+    }
   }
 
   const value = {
@@ -87,6 +85,7 @@ export function AuthProvider({ children }) {
     signup,
     logout,
     loading,
+    error,
     isAuthenticated: !!user,
   }
 

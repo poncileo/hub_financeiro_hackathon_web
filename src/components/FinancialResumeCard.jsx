@@ -16,18 +16,6 @@ function FinancialResumeCard({ title, type, value, isValueVisible, change, trend
       <div className="card-value">
         {isValueVisible ? formatValue(value) : '••••••'}
       </div>
-      {isValueVisible ? (
-        <div className={`card-change ${trend}`}>
-          <>
-            <span className="change-arrow">
-              {trend === 'up' ? '↑' : '↓'}
-            </span>
-            {change}
-          </>
-        </div>
-      ) : (
-        null
-      )}
       {type === 'balance' && (
         <div className="card-action">
           <Link to="/extrato" className="view-extract-button">

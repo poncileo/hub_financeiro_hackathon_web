@@ -1,10 +1,20 @@
 .financial-card {
-  background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-tertiary) 100%);
-  border-radius: 12px;
+  background: #00005f;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  border-radius: 25px;
   padding: 1.5rem;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border-color);
+  box-shadow: 0px 7px 5px -5px rgba(0,0,0,0.54);
+  -webkit-box-shadow: 0px 7px 5px -5px rgba(0,0,0,0.54);
+  -moz-box-shadow: 0px 7px 5px -5px rgba(0,0,0,0.54);
+  border: 1px solid #00005f;
   transition: transform 0.2s, box-shadow 0.2s;
+
+}
+
+.financial-card span, .financial-card div {
+  color: #fff;
+
 }
 
 .financial-card:hover {

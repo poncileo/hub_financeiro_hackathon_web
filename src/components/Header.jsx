@@ -1,24 +1,36 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { MdMenu, MdNotifications } from 'react-icons/md'
+import { MdMenu, MdNotifications, MdArrowBack } from 'react-icons/md'
 import './Header.css'
 
 function Header({ onMenuClick }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLogout = () => {
     logout()
     navigate('/login')
   }
 
+  const handleBack = () => {
+    navigate('/')
+  }
+
   return (
     <header className="header">
+      {location.pathname == '/' && (
       <button className="menu-button" onClick={onMenuClick}>
         <MdMenu className="menu-icon" />
       </button>
+      )}
+      {/* Back button visible on mobile when not on Dashboard */}
+      {location.pathname !== '/' && (
+        <button className="back-button" onClick={handleBack} aria-label="Voltar para o Dashboard">
+          <MdArrowBack className="menu-icon" />
+        </button>
+      )}
       <div className="header-content">
-        <h1 className="header-title">Hub Financeiro</h1>
         <div className="header-actions">
           <div className="notification-icon">
             <MdNotifications />
