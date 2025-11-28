@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MdArrowBack } from 'react-icons/md'
 import userService from '../services/userService'
+import { useAuth } from '../contexts/AuthContext'
 import '../styles/EditUser.css'
 
 function EditUser() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -57,12 +59,19 @@ function EditUser() {
     setLoading(true)
 
     try {
-      await userService.updateProfile(formData)
+      // Preparar dados para atualização (apenas campos permitidos pela API)
+      const updateData = {
+        name: formData.name,
+        email: formData.email,
+        // balance e creditScore podem ser atualizados se necessário
+      }
+      
+      await userService.updateProfile(user?.id || 1, updateData)
       alert('Dados atualizados com sucesso!')
       navigate('/')
     } catch (error) {
       console.error('Error updating user:', error)
-      alert('Erro ao atualizar dados')
+      alert(error.message || 'Erro ao atualizar dados')
     } finally {
       setLoading(false)
     }

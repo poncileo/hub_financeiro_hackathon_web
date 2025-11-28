@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import { formatValue } from '../utils/formatValue'
 import { MdQrCode, MdAccountBalance, MdSend, MdArrowDownward, MdAdd, MdDelete } from 'react-icons/md'
+import transactionService from '../services/transactionService'
+import pixKeyService from '../services/pixKeyService'
+import { useAuth } from '../contexts/AuthContext'
 import './Pix.css'
 
 function Pix() {
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('send')
   const [formData, setFormData] = useState({
     pixKey: '',
@@ -14,6 +18,7 @@ function Pix() {
     keyType: 'EMAIL',
     keyValue: '',
   })
+  const [loading, setLoading] = useState(false)
   const [qrCode, setQrCode] = useState(null)
   const [pixKeys, setPixKeys] = useState([
     { id: 1, type: 'CPF', value: '123.456.789-00' },
@@ -40,37 +45,116 @@ function Pix() {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
   }
 
-  const handleRegisterPixKey = (e) => {
+  const handleRegisterPixKey = async (e) => {
     e.preventDefault()
+    setLoading(true)
     
     if (!registrationForm.keyValue && registrationForm.keyType !== 'RANDOM') {
       alert('Por favor, preencha a chave PIX')
+      setLoading(false)
       return
     }
 
-    const newKey = {
-      id: Date.now(),
-      type: registrationForm.keyType,
-      value: registrationForm.keyType === 'RANDOM' ? generateRandomKey() : registrationForm.keyValue,
+    try {
+      const keyValue = registrationForm.keyType === 'RANDOM' ? generateRandomKey() : registrationForm.keyValue
+      
+      // Cadastrar chave PIX na API
+      const response = await pixKeyService.registerPixKey(
+        user?.id || 1,
+        registrationForm.keyType,
+        keyValue
+      )
+      
+      // Atualizar lista local (a resposta da API contém as chaves atualizadas)
+      if (response.pixKeys) {
+        setPixKeys(response.pixKeys.map((key, index) => ({
+          id: index + 1,
+          type: key.type,
+          value: key.key
+        })))
+      } else {
+        // Fallback: adicionar à lista local
+        const newKey = {
+          id: Date.now(),
+          type: registrationForm.keyType,
+          value: keyValue,
+        }
+        setPixKeys([...pixKeys, newKey])
+      }
+      
+      setRegistrationForm({ keyType: 'EMAIL', keyValue: '' })
+      alert('Chave PIX cadastrada com sucesso!')
+    } catch (error) {
+      console.error('Erro ao cadastrar chave PIX:', error)
+      alert(error.message || 'Erro ao cadastrar chave PIX. Tente novamente.')
+    } finally {
+      setLoading(false)
     }
-
-    setPixKeys([...pixKeys, newKey])
-    setRegistrationForm({ keyType: 'EMAIL', keyValue: '' })
-    alert('Chave PIX cadastrada com sucesso!')
   }
 
-  const handleDeletePixKey = (id) => {
-    if (confirm('Deseja remover esta chave PIX?')) {
-      setPixKeys(pixKeys.filter(key => key.id !== id))
-      alert('Chave PIX removida!')
+  const handleDeletePixKey = async (keyValue) => {
+    if (!confirm('Deseja remover esta chave PIX?')) {
+      return
+    }
+    
+    setLoading(true)
+    try {
+      await pixKeyService.deletePixKey(user?.id || 1, keyValue)
+      // Remover da lista local
+      setPixKeys(pixKeys.filter(key => key.value !== keyValue))
+      alert('Chave PIX removida com sucesso!')
+    } catch (error) {
+      console.error('Erro ao remover chave PIX:', error)
+      alert(error.message || 'Erro ao remover chave PIX. Tente novamente.')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleSendPix = (e) => {
+  const handleSendPix = async (e) => {
     e.preventDefault()
-    // Simulação de envio de PIX
-    alert('PIX enviado com sucesso!')
-    setFormData({ pixKey: '', value: '', description: '' })
+    setLoading(true)
+    
+    try {
+      // Validar chave PIX antes de enviar
+      try {
+        const recipient = await pixKeyService.findUserByPixKey(formData.pixKey)
+        if (!recipient || !recipient.name) {
+          alert('Chave PIX não encontrada. Verifique a chave e tente novamente.')
+          setLoading(false)
+          return
+        }
+        
+        // Confirmar envio mostrando o nome do destinatário
+        const confirmMessage = `Confirmar transferência de ${formatValue(Number(formData.value))} para ${recipient.name}?`
+        if (!confirm(confirmMessage)) {
+          setLoading(false)
+          return
+        }
+      } catch (validationError) {
+        if (validationError.message && validationError.message.includes('não encontrada')) {
+          alert('Chave PIX não encontrada. Verifique a chave e tente novamente.')
+          setLoading(false)
+          return
+        }
+        // Se for outro erro, continuar tentando enviar (pode ser que a validação falhe mas o envio funcione)
+      }
+      
+      // Enviar PIX via API
+      const response = await transactionService.sendPix(
+        formData.pixKey,
+        Number(formData.value),
+        formData.description || ''
+      )
+      
+      alert('PIX enviado com sucesso!')
+      setFormData({ pixKey: '', value: '', description: '' })
+    } catch (error) {
+      console.error('Erro ao enviar PIX:', error)
+      alert(error.message || 'Erro ao enviar PIX. Verifique o saldo e a chave PIX.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleGenerateQrCode = () => {
@@ -176,8 +260,8 @@ function Pix() {
               />
             </div>
 
-            <button type="submit" className="pix-submit-button">
-              Enviar PIX
+            <button type="submit" className="pix-submit-button" disabled={loading}>
+              {loading ? 'Enviando...' : 'Enviar PIX'}
             </button>
           </form>
         </div>
@@ -274,9 +358,9 @@ function Pix() {
                 </div>
               )}
 
-              <button type="submit" className="pix-submit-button">
+              <button type="submit" className="pix-submit-button" disabled={loading}>
                 <MdAdd />
-                Cadastrar Chave
+                {loading ? 'Cadastrando...' : 'Cadastrar Chave'}
               </button>
             </form>
           </div>
@@ -296,8 +380,9 @@ function Pix() {
                       <button
                         type="button"
                         className="delete-button"
-                        onClick={() => handleDeletePixKey(key.id)}
+                        onClick={() => handleDeletePixKey(key.value)}
                         title="Remover chave"
+                        disabled={loading}
                       >
                         <MdDelete />
                       </button>

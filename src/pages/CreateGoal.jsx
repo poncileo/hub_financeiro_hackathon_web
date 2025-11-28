@@ -1,25 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MdArrowBack } from 'react-icons/md'
-import goalsService from '../services/goalsService'
+import expenseService from '../services/expenseService'
+import { useAuth } from '../contexts/AuthContext'
 import '../styles/CreateGoal.css'
 
 function CreateGoal() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    name: '',
-    targetAmount: '',
-    targetDate: '',
-    category: 'savings',
-    description: ''
+    description: '',
+    amount: '',
+    executionDate: '',
+    isRecurringPayment: false,
+    isActive: true
   })
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value, type, checked } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }))
   }
 
@@ -29,18 +31,23 @@ function CreateGoal() {
 
     try {
       const payload = {
-        name: formData.name,
-        targetAmount: Number(formData.targetAmount),
-        targetDate: formData.targetDate,
-        category: formData.category,
+        userId: user?.id || 1, // Usar ID do usuário logado ou 1 como padrão
         description: formData.description,
+        amount: Number(formData.amount),
+        executionDate: formData.executionDate,
+        isRecurringPayment: formData.isRecurringPayment,
+        isActive: formData.isActive,
+        status: 'PENDING'
       }
 
-      await goalsService.createGoal(payload)
-      // navigate back to dashboard after creation
+      // Criar despesa (adiciona à lista mockada)
+      await expenseService.createExpense(payload)
+      
+      // Navegar de volta para o dashboard após criação
       navigate('/')
     } catch (error) {
-      console.error('Error creating goal:', error)
+      console.error('Erro ao criar despesa:', error)
+      alert('Erro ao criar despesa. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -49,30 +56,30 @@ function CreateGoal() {
   return (
     <div className="create-goal-container">
       <div className="create-goal-header">
-        <h1>Nova Meta de Poupança</h1>
+        <h1>Nova Despesa</h1>
       </div>
 
       <form className="create-goal-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="name">Nome da Meta *</label>
+          <label htmlFor="description">Descrição *</label>
           <input
             type="text"
-            id="name"
-            name="name"
-            value={formData.name}
+            id="description"
+            name="description"
+            value={formData.description}
             onChange={handleChange}
-            placeholder="Ex: Viagem para Paris"
+            placeholder="Ex: Conta de luz, Aluguel mensal"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="targetAmount">Valor Alvo (R$) *</label>
+          <label htmlFor="amount">Valor (R$) *</label>
           <input
             type="number"
-            id="targetAmount"
-            name="targetAmount"
-            value={formData.targetAmount}
+            id="amount"
+            name="amount"
+            value={formData.amount}
             onChange={handleChange}
             placeholder="0.00"
             step="0.01"
@@ -82,45 +89,41 @@ function CreateGoal() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="targetDate">Data Alvo *</label>
+          <label htmlFor="executionDate">Data de Execução *</label>
           <input
             type="date"
-            id="targetDate"
-            name="targetDate"
-            value={formData.targetDate}
+            id="executionDate"
+            name="executionDate"
+            value={formData.executionDate}
             onChange={handleChange}
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="category">Categoria</label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-          >
-            <option value="savings">Poupança</option>
-            <option value="travel">Viagem</option>
-            <option value="home">Casa</option>
-            <option value="education">Educação</option>
-            <option value="car">Carro</option>
-            <option value="emergency">Fundo de Emergência</option>
-            <option value="other">Outro</option>
-          </select>
+          <label htmlFor="isRecurringPayment" className="checkbox-label">
+            <input
+              type="checkbox"
+              id="isRecurringPayment"
+              name="isRecurringPayment"
+              checked={formData.isRecurringPayment}
+              onChange={handleChange}
+            />
+            <span>Pagamento Recorrente</span>
+          </label>
         </div>
 
         <div className="form-group">
-          <label htmlFor="description">Descrição (Opcional)</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Adicione uma descrição para sua meta..."
-            rows="3"
-          />
+          <label htmlFor="isActive" className="checkbox-label">
+            <input
+              type="checkbox"
+              id="isActive"
+              name="isActive"
+              checked={formData.isActive}
+              onChange={handleChange}
+            />
+            <span>Ativo</span>
+          </label>
         </div>
 
         <div className="form-actions">
@@ -136,7 +139,7 @@ function CreateGoal() {
             className="btn btn-primary"
             disabled={loading}
           >
-            {loading ? 'Criando...' : 'Criar Meta'}
+            {loading ? 'Criando...' : 'Criar Despesa'}
           </button>
         </div>
       </form>

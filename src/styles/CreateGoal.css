@@ -76,6 +76,26 @@
   resize: vertical;
 }
 
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.checkbox-label span {
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+}
+
 .form-actions {
   display: flex;
   gap: 1rem;

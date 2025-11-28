@@ -106,11 +106,36 @@
   background-color: var(--primary-dark);
 }
 
+.extrato-loading,
+.extrato-error {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+.extrato-error {
+  color: var(--danger-color);
+}
+
 .extrato-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 150px;
 }
 
 .summary-card {
@@ -197,6 +222,13 @@
 .table-body {
   display: flex;
   flex-direction: column;
+}
+
+.table-empty {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
 }
 
 .table-row {

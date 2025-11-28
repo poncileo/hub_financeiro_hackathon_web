@@ -3,17 +3,29 @@ import apiCall from './api'
 // Serviço de Usuários
 const userService = {
   // Obter perfil do usuário autenticado
+  // Endpoint: GET /users/me
   getProfile: async () => {
-    return await apiCall('/users/profile', {
+    return await apiCall('/users/me', {
       method: 'GET',
     })
   },
 
   // Atualizar perfil do usuário
-  updateProfile: async (userData) => {
-    return await apiCall('/users/profile', {
+  // Endpoint: PUT /users/{userId}
+  updateProfile: async (userId, userData) => {
+    return await apiCall(`/users/${userId}`, {
       method: 'PUT',
       body: JSON.stringify(userData),
+    })
+  },
+
+  // Buscar usuário por chave PIX
+  // Endpoint: GET /users/pix/{key}
+  getUserByPixKey: async (key) => {
+    // Codificar a chave para URL (especialmente para emails e telefones)
+    const encodedKey = encodeURIComponent(key)
+    return await apiCall(`/users/pix/${encodedKey}`, {
+      method: 'GET',
     })
   },
 

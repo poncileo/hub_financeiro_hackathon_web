@@ -10,25 +10,31 @@ const pixKeyService = {
   },
 
   // Cadastrar nova chave PIX
-  registerPixKey: async (type, key) => {
-    return await apiCall('/pix-keys', {
+  // Endpoint: POST /users/{userId}/pix
+  registerPixKey: async (userId, type, key) => {
+    return await apiCall(`/users/${userId}/pix`, {
       method: 'POST',
       body: JSON.stringify({ type, key }),
     })
   },
 
   // Deletar chave PIX
-  deletePixKey: async (pixKeyId) => {
-    return await apiCall(`/pix-keys/${pixKeyId}`, {
+  // Endpoint: DELETE /users/{userId}/pix/{key}
+  deletePixKey: async (userId, key) => {
+    // Codificar a chave para URL
+    const encodedKey = encodeURIComponent(key)
+    return await apiCall(`/users/${userId}/pix/${encodedKey}`, {
       method: 'DELETE',
     })
   },
 
   // Buscar usuário por chave PIX (para enviar PIX)
+  // Endpoint: GET /users/pix/{key}
   findUserByPixKey: async (pixKey) => {
-    return await apiCall('/pix-keys/find', {
-      method: 'POST',
-      body: JSON.stringify({ pixKey }),
+    // Codificar a chave para URL
+    const encodedKey = encodeURIComponent(pixKey)
+    return await apiCall(`/users/pix/${encodedKey}`, {
+      method: 'GET',
     })
   },
 

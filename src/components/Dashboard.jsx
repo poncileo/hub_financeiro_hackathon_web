@@ -58,10 +58,10 @@ function Dashboard() {
       <div className="dashboard-actions">
         <div className="savings-goal-card">
           <div className="savings-card-left">
-            <h3>Criar meta de poupança</h3>
-            <p>Defina um objetivo e acompanhe seu progresso</p>
+            <h3>Cadastrar Despesa</h3>
+            <p>Registre uma nova despesa ou pagamento recorrente</p>
           </div>
-          <Link to="/create-goal" className="savings-card-action" aria-label="Criar meta">
+          <Link to="/create-goal" className="savings-card-action" aria-label="Cadastrar despesa">
             <MdAdd />
           </Link>
         </div>

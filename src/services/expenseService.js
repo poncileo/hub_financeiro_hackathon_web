@@ -1,13 +1,72 @@
 import apiCall from './api'
 
+// Lista global mockada de despesas (temporária até integração com API real)
+let expensesTemp = []
+
 // Serviço de Despesas (Expenses)
 const expenseService = {
+  // Adicionar despesa à lista mockada
+  addExpenseToTemp: (expenseData) => {
+    const newExpense = {
+      id: expensesTemp.length > 0 ? Math.max(...expensesTemp.map(e => e.id)) + 1 : 1,
+      userId: expenseData.userId || 1,
+      isRecurringPayment: expenseData.isRecurringPayment || false,
+      isActive: expenseData.isActive !== undefined ? expenseData.isActive : true,
+      amount: expenseData.amount,
+      description: expenseData.description,
+      executionDate: expenseData.executionDate,
+      status: expenseData.status || 'PENDING',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    expensesTemp.push(newExpense)
+    return newExpense
+  },
+
+  // Obter lista mockada de despesas
+  GetExpenses: () => {
+    return expensesTemp
+  },
   // Listar todas as despesas do usuário
+  // Endpoint: GET /expenses/me
   getExpenses: async (filters = {}) => {
-    const queryParams = new URLSearchParams(filters).toString()
-    return await apiCall(`/expenses${queryParams ? '?' + queryParams : ''}`, {
-      method: 'GET',
-    })
+    try {
+      // Buscar da API real
+      const expenses = await apiCall('/expenses/me', {
+        method: 'GET',
+      })
+      
+      // Aplicar filtros no frontend (já que a API retorna todas)
+      let filtered = Array.isArray(expenses) ? expenses : []
+      
+      if (filters.status) {
+        filtered = filtered.filter(e => e.status === filters.status)
+      }
+      if (filters.isActive !== undefined) {
+        filtered = filtered.filter(e => e.isActive === (filters.isActive === 'true'))
+      }
+      if (filters.isRecurringPayment !== undefined) {
+        filtered = filtered.filter(e => e.isRecurringPayment === (filters.isRecurringPayment === 'true'))
+      }
+      
+      return filtered
+    } catch (error) {
+      // Fallback para lista mockada em caso de erro
+      console.warn('Erro ao buscar despesas da API, usando dados mockados:', error)
+      let expenses = expenseService.GetExpenses()
+      
+      if (filters.status) {
+        expenses = expenses.filter(e => e.status === filters.status)
+      }
+      if (filters.isActive !== undefined) {
+        expenses = expenses.filter(e => e.isActive === (filters.isActive === 'true'))
+      }
+      if (filters.isRecurringPayment !== undefined) {
+        expenses = expenses.filter(e => e.isRecurringPayment === (filters.isRecurringPayment === 'true'))
+      }
+      
+      return expenses
+    }
   },
 
   // Listar apenas despesas recorrentes
@@ -32,11 +91,32 @@ const expenseService = {
   },
 
   // Criar nova despesa
+  // Endpoint: POST /expenses
   createExpense: async (expenseData) => {
-    return await apiCall('/expenses', {
-      method: 'POST',
-      body: JSON.stringify(expenseData),
-    })
+    try {
+      // Preparar payload (remover userId, pois é obtido do token)
+      const payload = {
+        isRecurringPayment: expenseData.isRecurringPayment || false,
+        isActive: expenseData.isActive !== undefined ? expenseData.isActive : true,
+        amount: expenseData.amount,
+        description: expenseData.description,
+        executionDate: expenseData.executionDate,
+        status: expenseData.status || 'PENDING'
+      }
+      
+      // Criar na API real
+      const newExpense = await apiCall('/expenses', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      })
+      
+      return newExpense
+    } catch (error) {
+      // Fallback para lista mockada em caso de erro
+      console.warn('Erro ao criar despesa na API, usando lista mockada:', error)
+      const newExpense = expenseService.addExpenseToTemp(expenseData)
+      return newExpense
+    }
   },
 
   // Atualizar despesa
