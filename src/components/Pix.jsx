@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { formatValue } from '../utils/formatValue'
-import { MdQrCode, MdAccountBalance, MdSend, MdArrowDownward } from 'react-icons/md'
+import { MdQrCode, MdAccountBalance, MdSend, MdArrowDownward, MdAdd, MdDelete } from 'react-icons/md'
 import './Pix.css'
 
 function Pix() {
@@ -10,7 +10,15 @@ function Pix() {
     value: '',
     description: '',
   })
+  const [registrationForm, setRegistrationForm] = useState({
+    keyType: 'EMAIL',
+    keyValue: '',
+  })
   const [qrCode, setQrCode] = useState(null)
+  const [pixKeys, setPixKeys] = useState([
+    { id: 1, type: 'CPF', value: '123.456.789-00' },
+    { id: 2, type: 'EMAIL', value: 'usuario@email.com' },
+  ])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -18,6 +26,44 @@ function Pix() {
       ...prev,
       [name]: value,
     }))
+  }
+
+  const handleRegistrationChange = (e) => {
+    const { name, value } = e.target
+    setRegistrationForm(prev => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
+  const generateRandomKey = () => {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  }
+
+  const handleRegisterPixKey = (e) => {
+    e.preventDefault()
+    
+    if (!registrationForm.keyValue && registrationForm.keyType !== 'RANDOM') {
+      alert('Por favor, preencha a chave PIX')
+      return
+    }
+
+    const newKey = {
+      id: Date.now(),
+      type: registrationForm.keyType,
+      value: registrationForm.keyType === 'RANDOM' ? generateRandomKey() : registrationForm.keyValue,
+    }
+
+    setPixKeys([...pixKeys, newKey])
+    setRegistrationForm({ keyType: 'EMAIL', keyValue: '' })
+    alert('Chave PIX cadastrada com sucesso!')
+  }
+
+  const handleDeletePixKey = (id) => {
+    if (confirm('Deseja remover esta chave PIX?')) {
+      setPixKeys(pixKeys.filter(key => key.id !== id))
+      alert('Chave PIX removida!')
+    }
   }
 
   const handleSendPix = (e) => {
@@ -30,6 +76,11 @@ function Pix() {
   const handleGenerateQrCode = () => {
     // Simulação de geração de QR Code
     setQrCode('QR_CODE_SIMULADO_123456')
+  }
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text)
+    alert('Chave copiada!')
   }
 
   const recentPix = [
@@ -72,6 +123,13 @@ function Pix() {
         >
           <MdArrowDownward />
           Receber PIX
+        </button>
+        <button
+          className={`pix-tab ${activeTab === 'register' ? 'active' : ''}`}
+          onClick={() => setActiveTab('register')}
+        >
+          <MdAdd />
+          Cadastrar Chave
         </button>
       </div>
 
@@ -164,6 +222,98 @@ function Pix() {
                 <button className="copy-button">Copiar</button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'register' && (
+        <div className="pix-register-section">
+          <div className="register-form-card">
+            <h3>Cadastrar Nova Chave PIX</h3>
+            <form onSubmit={handleRegisterPixKey} className="pix-form">
+              <div className="form-group">
+                <label>Tipo de Chave</label>
+                <select
+                  name="keyType"
+                  value={registrationForm.keyType}
+                  onChange={handleRegistrationChange}
+                  className="form-select"
+                >
+                  <option value="EMAIL">Email</option>
+                  <option value="CPF">CPF</option>
+                  <option value="PHONE">Telefone</option>
+                  <option value="RANDOM">Chave Aleatória (Gerada)</option>
+                </select>
+              </div>
+
+              {registrationForm.keyType !== 'RANDOM' && (
+                <div className="form-group">
+                  <label>
+                    {registrationForm.keyType === 'EMAIL' && 'Email'}
+                    {registrationForm.keyType === 'CPF' && 'CPF (XXX.XXX.XXX-XX)'}
+                    {registrationForm.keyType === 'PHONE' && 'Telefone (+55 XX XXXXX-XXXX)'}
+                  </label>
+                  <input
+                    type="text"
+                    name="keyValue"
+                    value={registrationForm.keyValue}
+                    onChange={handleRegistrationChange}
+                    placeholder={
+                      registrationForm.keyType === 'EMAIL' ? 'seu@email.com' :
+                      registrationForm.keyType === 'CPF' ? '123.456.789-00' :
+                      registrationForm.keyType === 'PHONE' ? '+55 11 99999-9999' : ''
+                    }
+                    required={registrationForm.keyType !== 'RANDOM'}
+                  />
+                </div>
+              )}
+
+              {registrationForm.keyType === 'RANDOM' && (
+                <div className="info-box">
+                  <p>Uma chave aleatória será gerada automaticamente para você.</p>
+                </div>
+              )}
+
+              <button type="submit" className="pix-submit-button">
+                <MdAdd />
+                Cadastrar Chave
+              </button>
+            </form>
+          </div>
+
+          <div className="registered-keys-card">
+            <h3>Minhas Chaves PIX Cadastradas</h3>
+            {pixKeys.length === 0 ? (
+              <div className="empty-state">
+                <p>Nenhuma chave PIX cadastrada ainda</p>
+              </div>
+            ) : (
+              <div className="keys-list-register">
+                {pixKeys.map((key) => (
+                  <div key={key.id} className="key-item-register">
+                    <div className="key-header">
+                      <div className="key-type-badge">{key.type}</div>
+                      <button
+                        type="button"
+                        className="delete-button"
+                        onClick={() => handleDeletePixKey(key.id)}
+                        title="Remover chave"
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
+                    <div className="key-value-register">{key.value}</div>
+                    <button
+                      type="button"
+                      className="copy-button-register"
+                      onClick={() => copyToClipboard(key.value)}
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -39,13 +39,6 @@ function Dashboard() {
       trend: 'down',
       icon: MdAccountBalance,
     },
-    {
-      title: 'Investimentos',
-      value: 'R$ 89.200,00',
-      change: '+15.3%',
-      trend: 'up',
-      icon: MdAccountBalance,
-    },
   ]
 
   // Cálculo de gastos em tempo real
